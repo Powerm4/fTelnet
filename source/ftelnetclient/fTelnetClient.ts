@@ -679,11 +679,16 @@ class fTelnetClient {
         }
     }
 
-    public FullScreenToggle(): void {
+    public FullScreenToggle(fullscreen: boolean | null = null): void {
         // Hide the menu buttons (in case we clicked the Connect menu button)
         if (typeof this._MenuButtons !== 'undefined') { this._MenuButtons.style.display = 'none'; }
 
         if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
+            // Check if we want to toggle to the off state -- if we do, then don't set full screen
+            if (fullscreen === false) {
+                return;
+            }
+
             if (this._fTelnetContainer.requestFullscreen) {
                 this._fTelnetContainer.requestFullscreen();
             } else if (this._fTelnetContainer.msRequestFullscreen) {
@@ -694,6 +699,11 @@ class fTelnetClient {
                 this._fTelnetContainer.webkitRequestFullscreen();
             }
         } else {
+            // Check if we want to toggle to the on state -- if we do, then don't exit full screen
+            if (fullscreen === true) {
+                return;
+            }
+
             if (document.exitFullscreen) {
                 document.exitFullscreen();
             } else if (document.msExitFullscreen) {
@@ -870,6 +880,10 @@ class fTelnetClient {
             if (!this._Connection.connected) { return; }
             this._Connection.writeString(String.fromCharCode(0) + this._Options.RLoginClientUsername + String.fromCharCode(0) + this._Options.RLoginServerUsername + String.fromCharCode(0) + TerminalType + String.fromCharCode(0));
             this._Connection.flush();
+        }
+
+        if (this._Options.FullScreenOnConnect) {
+            this.FullScreenToggle(true);
         }
 
         // TODO If telnet, old fTelnet used to send will sga, wont linemode, and will/wont echo based on localecho

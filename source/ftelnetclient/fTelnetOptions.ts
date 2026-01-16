@@ -26,6 +26,7 @@ class fTelnetOptions {
     public Enter: string = '\r';
     public Font: string = 'CP437';
     public ForceWss: boolean = false;
+    public FullScreenOnConnect: boolean = false;
     public Hostname: string = 'bbs.ftelnet.ca';
     public LocalEcho: boolean = false;
     public NegotiateLocalEcho: boolean = true;
